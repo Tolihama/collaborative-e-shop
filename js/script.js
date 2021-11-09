@@ -1,4 +1,20 @@
-// PRODUCTS ARRAY
+// Traccia:
+// Data la lista di prodotti in allegato, organizziamo un carrello per un ipotetico shop virtuale.
+
+// Avremo una pagina di prodotti che mostrera’ tutti gli articoli presenti in catalogo; al click di un prodotto, nella sezione sottostante alla lista si visualizzera’ il dettaglio del prodotto selezionato con prezzo, categoria e descrizione (da ora chiameremo questa sezione: “dettaglio prodotto”)
+
+// All’interno del dettaglio prodotto ci saranno due bottoni: il primo aggiunge il prodotto al carrello, il secondo alla lista dei desideri
+
+// Nell’header del nostro e-shop verra’ poi riportato il numero di prodotti aggiunto nel carrello e il numero di prodotti aggiunto nella lista dei desideri
+
+// al click del bottone “Acquista” comparira’ un messaggio di ringraziamento e il carrello si svuotera’
+
+// In questo esercizio la creazione del layout e’ a scelta del team, quindi sbizzarritevi. Ricordate: in questo caso non importa riprodurre il layout di uno store reale.
+
+// Il punto focale dell’esercizio e’ capire che codice possiamo riutilizzare e come raggrupparlo in funzioni. 
+
+
+// Creare Array Con i prodotti
 const products = [
     {   
         id: 1,
@@ -80,5 +96,63 @@ const products = [
         description: 'Un chip superpotente. La velocità del 5G. Un sistema evoluto a doppia fotocamera. La resistenza del Ceramic Shield, più robusto di qualsiasi vetro per smartphone. E uno sfolgorante display OLED. iPhone 12 ha proprio tutto. Anche due formati perfetti.',
         io: ['wifi, USB-C, Jack cuffie', 'waterproof']
     }
-];
+]
 
+
+// Targetizzare gli elementi del DOM necessari
+const container = document.querySelector('.card_container');
+const cart = document.querySelector('.cart')
+
+// Generare le Card 
+products.forEach((product) =>{
+    const {title, subtitle, url, price, category, description, id} = product;
+    container.innerHTML += `
+    <div id="${id}" class="col-4 active_card p-2">
+        <div class="card bg-light p-2 h-100">
+            <div class="toggle">
+                <div class="text-center py-3">
+                    <img class="w-100 product_img" src="./img/${url}" alt="${title}">
+                </div>
+                <div>
+                    <h2 class="title">${title}</h2>
+                    <h3 class="subtitle">${subtitle}</h3>
+                </div>
+            </div>
+            <div class="card_details d-flex flex-column h-100 d-none">
+                <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                    <div class="category"><span>${category}</span></div>
+                    <p class="card-text description">${description}</p>
+                    <div class="price">${price}€</div>
+                </div>
+                <div class="py-3 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-primary me-2 add_dream_list">Aggiungi a Lista Desideri</button>
+                    <button type="button" class="btn btn-outline-primary me-2 add_cart">Aggiungi al Carrello</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    `;
+});
+
+// Aggiungere funzionalità al Click della card
+const active = document.querySelectorAll('.active_card');
+
+active.forEach((card) => {
+    const descritpionNone = card.querySelector('.card_details');
+    const title = card.querySelector('.title');
+    const toggle = card.querySelector('.toggle');
+
+    toggle.addEventListener('click' , function(){
+        descritpionNone.classList.toggle('d-none')
+    })
+    const addCart = card.querySelector('.add_cart')
+    addCart.addEventListener('click' , function(){
+        cart.innerHTML += `
+        <li class="dropdown-item">
+            ${title.innerHTML}
+        </li>
+        `;
+    });
+})
+
+// Aggiungere prodotti al Carrello e Lista Desideri
